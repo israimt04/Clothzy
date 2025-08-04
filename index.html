@@ -1,474 +1,129 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Product Card - Clothzy</title>
-    <style>
-        /* CSS Variables for consistent theming */
-        :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --accent-color: #e74c3c;
-            --text-color: #2c3e50;
-            --border-color: #bdc3c7;
-            --success-color: #27ae60;
-            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --transition-speed: 0.3s;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Product Card</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      overflow: hidden;
+      max-width: 400px;
+      width: 100%;
+    }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
+    .card img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+    }
 
-        /* Product Card Layout using CSS Grid */
-        .product-card {
-            background: white;
-            border-radius: 16px;
-            box-shadow: var(--card-shadow);
-            overflow: hidden;
-            max-width: 400px;
-            width: 100%;
-            display: grid;
-            grid-template-rows: auto 1fr auto;
-            transition: transform var(--transition-speed) ease;
-        }
+    .card-body {
+      padding: 20px;
+    }
 
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
+    .title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
 
-        /* Product Image Section */
-        .product-image-section {
-            position: relative;
-            overflow: hidden;
-        }
+    .price {
+      color: #e74c3c;
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
 
-        .product-image {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-            transition: transform var(--transition-speed) ease;
-        }
+    .colors {
+      display: flex;
+      gap: 10px;
+    }
 
-        .product-image:hover {
-            transform: scale(1.05);
-        }
+    .color {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+    }
 
-        /* Product Info Section using Flexbox */
-        .product-info {
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
+    .color.active {
+      border-color: #333;
+    }
 
-        .product-name {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--text-color);
-            margin: 0;
-        }
-
-        .product-price {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--accent-color);
-            margin: 0;
-            transition: all var(--transition-speed) ease;
-        }
-
-        .price-update {
-            animation: priceUpdate 0.5s ease;
-        }
-
-        @keyframes priceUpdate {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        /* Color Swatches Section */
-        .color-options {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .color-label {
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: var(--text-color);
-            margin-bottom: 4px;
-        }
-
-        .color-swatches {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        /* Color Swatch Styling */
-        .color-swatch {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 3px solid transparent;
-            cursor: pointer;
-            position: relative;
-            transition: all var(--transition-speed) ease;
-            background-size: cover;
-            background-position: center;
-        }
-
-        .color-swatch:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        .color-swatch:focus {
-            outline: 2px solid var(--secondary-color);
-            outline-offset: 2px;
-        }
-
-        /* Active state styling */
-        .color-swatch[aria-checked="true"] {
-            border-color: var(--text-color);
-            transform: scale(1.1);
-            box-shadow: 0 0 0 2px white, 0 0 0 4px var(--text-color);
-        }
-
-        .color-swatch[aria-checked="true"]::after {
-            content: '✓';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            font-weight: bold;
-            font-size: 16px;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
-        }
-
-        /* Individual color styles */
-        .color-red {
-            background-color: #e74c3c;
-        }
-
-        .color-blue {
-            background-color: #3498db;
-        }
-
-        .color-green {
-            background-color: #27ae60;
-        }
-
-        .color-black {
-            background-color: #2c3e50;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 480px) {
-            .product-card {
-                max-width: 100%;
-                margin: 10px;
-            }
-            
-            .product-info {
-                padding: 16px;
-            }
-            
-            .product-name {
-                font-size: 1.25rem;
-            }
-            
-            .color-swatch {
-                width: 35px;
-                height: 35px;
-            }
-        }
-
-        /* Loading state */
-        .loading {
-            opacity: 0.7;
-            pointer-events: none;
-        }
-
-        .loading .product-image {
-            filter: blur(2px);
-        }
-
-        /* Accessibility improvements */
-        @media (prefers-reduced-motion: reduce) {
-            * {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
-        }
-    </style>
+    .red { background: #e74c3c; }
+    .blue { background: #3498db; }
+    .green { background: #2ecc71; }
+    .black { background: #2c3e50; }
+  </style>
 </head>
 <body>
-    <!-- Main Product Card Structure -->
-    <section class="product-card" role="main" aria-labelledby="product-name">
-        <!-- Product Image Section -->
-        <figure class="product-image-section">
-            <img 
-                id="product-image" 
-                class="product-image" 
-                src="https://image.hm.com/assets/hm/46/80/4680659fadf469e7a9e61b50667eb353a6d26477.jpg?imwidth=2160" 
-                alt="Premium Cotton T-Shirt in Red color"
-                loading="eager"
-            >
-        </figure>
+  <div class="card">
+    <img id="product-img" src="https://image.hm.com/assets/hm/46/80/4680659fadf469e7a9e61b50667eb353a6d26477.jpg?imwidth=2160" alt="Red T-Shirt" />
+    <div class="card-body">
+      <div class="title">Premium Cotton T-Shirt</div>
+      <div id="product-price" class="price">₹ 999</div>
+      <div class="colors">
+        <div class="color red active" data-color="Red"></div>
+        <div class="color blue" data-color="Blue"></div>
+        <div class="color green" data-color="Green"></div>
+        <div class="color black" data-color="Black"></div>
+      </div>
+    </div>
+  </div>
 
-        <!-- Product Information Section -->
-        <div class="product-info">
-            <h2 id="product-name" class="product-name">Premium Cotton T-Shirt</h2>
-            <p id="product-price" class="product-price">₹ 999</p>
+  <script>
+    const colors = document.querySelectorAll('.color');
+    const img = document.getElementById('product-img');
+    const price = document.getElementById('product-price');
 
-            <!-- Color Selection Section -->
-            <div class="color-options" role="radiogroup" aria-labelledby="color-label">
-                <label id="color-label" class="color-label">Select Color:</label>
-                <div class="color-swatches">
-                    <button 
-                        class="color-swatch color-red" 
-                        role="radio" 
-                        aria-checked="true" 
-                        aria-label="Red color variant - ₹999"
-                        data-color="Red"
-                        tabindex="0"
-                    ></button>
-                    <button 
-                        class="color-swatch color-blue" 
-                        role="radio" 
-                        aria-checked="false" 
-                        aria-label="Blue color variant - ₹1049"
-                        data-color="Blue"
-                        tabindex="-1"
-                    ></button>
-                    <button 
-                        class="color-swatch color-green" 
-                        role="radio" 
-                        aria-checked="false" 
-                        aria-label="Green color variant - ₹1099"
-                        data-color="Green"
-                        tabindex="-1"
-                    ></button>
-                    <button 
-                        class="color-swatch color-black" 
-                        role="radio" 
-                        aria-checked="false" 
-                        aria-label="Black color variant - ₹1199"
-                        data-color="Black"
-                        tabindex="-1"
-                    ></button>
-                </div>
-            </div>
-        </div>
-    </section>
+    const data = {
+      Red: {
+        img: "https://image.hm.com/assets/hm/46/80/4680659fadf469e7a9e61b50667eb353a6d26477.jpg?imwidth=2160",
+        price: "₹ 999",
+        alt: "Red T-Shirt"
+      },
+      Blue: {
+        img: "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcS0g2IixMdPpHwLWZumFsUw6LUJd4zVrKo0ykTrG2RpN1EcMHJNFQ6P9Ebn1yqimaQocJubqlnifYEOntIQ8DaLncbdHGMMBSkwPcGO7guHRHied2kydiIR",
+        price: "₹ 1049",
+        alt: "Blue T-Shirt"
+      },
+      Green: {
+        img: "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcT74U8LvaLViKyfGP22_oT18lzeFIrNm7STDZDDdHvAqF0o0yNSidYzFQm4RlreJX4T04E0siQZf88Z6Hwmaq6AJsyuvl2NNpbDEzQ_Uk_eBD-8lzaaeUWM",
+        price: "₹ 1099",
+        alt: "Green T-Shirt"
+      },
+      Black: {
+        img: "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcQt_R0juR2Pf74U4ZoAkQAbrFaNAU1UbDMfyb5dbTusJ0fT0he-tow8bhW9UxaKQtsk9u5QH0zEfsdtpuqQmwnfu3kLJxdiErsGuDS_Hwbe",
+        price: "₹ 1199",
+        alt: "Black T-Shirt"
+      }
+    };
 
-    <script>
-        // Product data structure with variations
-        const productData = [
-            {
-                color: "Red",
-                price: "₹ 999",
-                image: "https://image.hm.com/assets/hm/46/80/4680659fadf469e7a9e61b50667eb353a6d26477.jpg?imwidth=2160",
-                altText: "Premium Cotton T-Shirt in Red color"
-            },
-            {
-                color: "Blue", 
-                price: "₹ 1049",
-                image: "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcS0g2IixMdPpHwLWZumFsUw6LUJd4zVrKo0ykTrG2RpN1EcMHJNFQ6P9Ebn1yqimaQocJubqlnifYEOntIQ8DaLncbdHGMMBSkwPcGO7guHRHied2kydiIR",
-                altText: "Premium Cotton T-Shirt in Blue color"
-            },
-            {
-                color: "Green",
-                price: "₹ 1099", 
-                image: "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcT74U8LvaLViKyfGP22_oT18lzeFIrNm7STDZDDdHvAqF0o0yNSidYzFQm4RlreJX4T04E0siQZf88Z6Hwmaq6AJsyuvl2NNpbDEzQ_Uk_eBD-8lzaaeUWM",
-                altText: "Premium Cotton T-Shirt in Green color"
-            },
-            {
-                color: "Black",
-                price: "₹ 1199",
-                image: "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcQt_R0juR2Pf74U4ZoAkQAbrFaNAU1UbDMfyb5dbTusJ0fT0he-tow8bhW9UxaKQtsk9u5QH0zEfsdtpuqQmwnfu3kLJxdiErsGuDS_Hwbe",
-                altText: "Premium Cotton T-Shirt in Black color"
-            }
-        ];
+    colors.forEach(color => {
+      color.addEventListener('click', () => {
+        // Remove active class from all
+        colors.forEach(c => c.classList.remove('active'));
+        color.classList.add('active');
 
-        // DOM element references
-        const productImage = document.getElementById('product-image');
-        const productPrice = document.getElementById('product-price');
-        const colorSwatches = document.querySelectorAll('.color-swatch');
-        const productCard = document.querySelector('.product-card');
-
-        // Image preloading for better performance
-        function preloadImages() {
-            productData.forEach(product => {
-                const img = new Image();
-                img.src = product.image;
-            });
-        }
-
-        // Update product display
-        function updateProduct(selectedData) {
-            // Add loading state
-            productCard.classList.add('loading');
-            
-            // Update image with smooth transition
-            setTimeout(() => {
-                productImage.src = selectedData.image;
-                productImage.alt = selectedData.altText;
-                
-                // Update price with animation
-                productPrice.textContent = selectedData.price;
-                productPrice.classList.add('price-update');
-                
-                // Remove loading state
-                productCard.classList.remove('loading');
-                
-                // Remove animation class after animation completes
-                setTimeout(() => {
-                    productPrice.classList.remove('price-update');
-                }, 500);
-            }, 150);
-        }
-
-        // Handle swatch selection
-        function handleSwatchClick(event) {
-            const clickedSwatch = event.currentTarget;
-            const selectedColor = clickedSwatch.dataset.color;
-            
-            // Find product data for selected color
-            const selectedProduct = productData.find(product => product.color === selectedColor);
-            
-            if (!selectedProduct) {
-                console.error(`Product data not found for color: ${selectedColor}`);
-                return;
-            }
-
-            // Update ARIA states and tabindex for accessibility
-            colorSwatches.forEach(swatch => {
-                swatch.setAttribute('aria-checked', 'false');
-                swatch.setAttribute('tabindex', '-1');
-            });
-            
-            // Set active state for clicked swatch
-            clickedSwatch.setAttribute('aria-checked', 'true');
-            clickedSwatch.setAttribute('tabindex', '0');
-            clickedSwatch.focus();
-
-            // Update product display
-            updateProduct(selectedProduct);
-            
-            // Update aria-label for the clicked swatch
-            clickedSwatch.setAttribute('aria-label', `${selectedColor} color variant - ${selectedProduct.price} - Currently selected`);
-        }
-
-        // Keyboard navigation support
-        function handleKeyNavigation(event) {
-            const currentSwatch = event.currentTarget;
-            const swatchesArray = Array.from(colorSwatches);
-            const currentIndex = swatchesArray.indexOf(currentSwatch);
-            let targetIndex;
-
-            switch(event.key) {
-                case 'ArrowRight':
-                case 'ArrowDown':
-                    event.preventDefault();
-                    targetIndex = (currentIndex + 1) % swatchesArray.length;
-                    break;
-                case 'ArrowLeft':
-                case 'ArrowUp':
-                    event.preventDefault();
-                    targetIndex = (currentIndex - 1 + swatchesArray.length) % swatchesArray.length;
-                    break;
-                case 'Home':
-                    event.preventDefault();
-                    targetIndex = 0;
-                    break;
-                case 'End':
-                    event.preventDefault();
-                    targetIndex = swatchesArray.length - 1;
-                    break;
-                case 'Enter':
-                case ' ':
-                    event.preventDefault();
-                    handleSwatchClick(event);
-                    return;
-                default:
-                    return;
-            }
-
-            // Focus and select the target swatch
-            if (targetIndex !== undefined) {
-                swatchesArray[targetIndex].focus();
-                handleSwatchClick({ currentTarget: swatchesArray[targetIndex] });
-            }
-        }
-
-        // Initialize event listeners
-        function initializeEventListeners() {
-            colorSwatches.forEach(swatch => {
-                // Click event
-                swatch.addEventListener('click', handleSwatchClick);
-                
-                // Keyboard navigation
-                swatch.addEventListener('keydown', handleKeyNavigation);
-                
-                // Focus management
-                swatch.addEventListener('focus', () => {
-                    swatch.style.outline = '2px solid #3498db';
-                    swatch.style.outlineOffset = '2px';
-                });
-                
-                swatch.addEventListener('blur', () => {
-                    swatch.style.outline = '';
-                    swatch.style.outlineOffset = '';
-                });
-            });
-        }
-
-        // Initialize the component
-        function init() {
-            preloadImages();
-            initializeEventListeners();
-            
-            // Set initial focus on the first selected swatch
-            const activeSwatch = document.querySelector('.color-swatch[aria-checked="true"]');
-            if (activeSwatch) {
-                activeSwatch.focus();
-            }
-        }
-
-        // Start the application when DOM is loaded
-        document.addEventListener('DOMContentLoaded', init);
-
-        // Handle image loading errors
-        productImage.addEventListener('error', () => {
-            console.error('Failed to load product image');
-            productImage.alt = 'Product image failed to load';
-        });
-
-        // Add loading indicator for image changes
-        productImage.addEventListener('load', () => {
-            productCard.classList.remove('loading');
-        });
-    </script>
-
+        const selected = data[color.dataset.color];
+        img.src = selected.img;
+        img.alt = selected.alt;
+        price.textContent = selected.price;
+      });
+    });
+  </script>
 </body>
 </html>
